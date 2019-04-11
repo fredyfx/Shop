@@ -1,8 +1,11 @@
 ﻿namespace Shop.UIClassic.iOS
 {
     using System;
+    using System.Collections.Generic;
+    using Common.Helpers;
     using Common.Models;
     using Common.Services;
+    using Newtonsoft.Json;
     using UIKit;
 
     public partial class ViewController : UIViewController
@@ -71,10 +74,33 @@
             }
 
             var token = (TokenResponse)response.Result;
+
+            var response2 = await this.apiService.GetListAsync<Product>(
+                "https://shopzulu.azurewebsites.net",
+                "/api",
+                "/Products",
+                "bearer",
+                token.Token);
+
+            if (!response2.IsSuccess)
+            {
+                var alert = UIAlertController.Create("Error", response.Message, UIAlertControllerStyle.Alert);
+                alert.AddAction(UIAlertAction.Create("Accept", UIAlertActionStyle.Default, null));
+                this.PresentViewController(alert, true, null);
+                return;
+            }
+
+            var products = (List<Product>)response2.Result;
+
+            Settings.UserEmail = this.EmailText.Text;
+            Settings.Token = JsonConvert.SerializeObject(token);
+            Settings.Products = JsonConvert.SerializeObject(products);
             this.ActivityIndicator.StopAnimating();
-            var ok = UIAlertController.Create("Ok", "Fuck yeah!", UIAlertControllerStyle.Alert);
-            ok.AddAction(UIAlertAction.Create("Accept", UIAlertActionStyle.Default, null));
-            this.PresentViewController(ok, true, null);
+
+            var board = UIStoryboard.FromName("Main", null);
+            var productsViewController = board.InstantiateViewController("ProductsViewController");
+            productsViewController.Title = "Products";
+            this.NavigationController.PushViewController(productsViewController, true);
         }
     }
 }

@@ -123,6 +123,7 @@
     </ImageAsset>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Cells\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
@@ -134,8 +135,13 @@
     <None Include="Entitlements.plist" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSources\ProductsDataSource.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="ProductsView.cs" />
+    <Compile Include="ProductsView.designer.cs">
+      <DependentUpon>ProductsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewController.cs" />
     <Compile Include="ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>

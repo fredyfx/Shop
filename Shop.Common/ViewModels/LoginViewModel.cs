@@ -1,19 +1,21 @@
 ﻿namespace Shop.Common.ViewModels
 {
+    using Services;
     using System.Windows.Input;
+    using Helpers;
     using Interfaces;
     using Models;
     using MvvmCross.Commands;
     using MvvmCross.Navigation;
     using MvvmCross.ViewModels;
-    using Services;
-    using Shop.Common.Helpers;
     using Newtonsoft.Json;
+
     public class LoginViewModel : MvxViewModel
     {
         private string email;
         private string password;
         private MvxCommand loginCommand;
+        private MvxCommand registerCommand;
         private readonly IApiService apiService;
         private readonly IDialogService dialogService;
         private readonly IMvxNavigationService navigationService;
@@ -43,6 +45,15 @@
             {
                 this.loginCommand = this.loginCommand ?? new MvxCommand(this.DoLoginCommand);
                 return this.loginCommand;
+            }
+        }
+
+        public ICommand RegisterCommand
+        {
+            get
+            {
+                this.registerCommand = this.registerCommand ?? new MvxCommand(this.DoRegisterCommand);
+                return this.registerCommand;
             }
         }
 
@@ -100,6 +111,11 @@
             Settings.Token = JsonConvert.SerializeObject(token);
             this.IsLoading = false;
             await this.navigationService.Navigate<ProductsViewModel>();
+        }
+
+        private async void DoRegisterCommand()
+        {
+            await this.navigationService.Navigate<RegisterViewModel>();
         }
     }
 }
